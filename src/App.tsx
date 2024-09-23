@@ -6,8 +6,8 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-100">
       <NavBar />
-      <main className="container mx-auto mt-8 p-4">
-        <ItemListContainer greeting="¡Bienvenido a El Ropero!" />
+      <main className=" mx-auto mt-2 p-2">
+        <ItemListContainer greeting="¡Bienvenido a el Ropero!" />
       </main>
     </div>
   )
