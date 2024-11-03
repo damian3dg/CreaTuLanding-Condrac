@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RopaItem } from '../data/productData';
+import { useCart } from '../context/CartContext';
+import AddToCartNotification from './AddToCartNotification';
 
 interface AddToCartProps {
   item: RopaItem;
-  onAddToCart: (quantity: number) => void;
 }
 
-const AddToCart: React.FC<AddToCartProps> = ({ item, onAddToCart }) => {
+const AddToCart: React.FC<AddToCartProps> = ({ item }) => {
   const [quantity, setQuantity] = useState(1);
+  const { addToCart, isItemInCart, cartItems } = useCart();
+  const [isInCart, setIsInCart] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+
+  useEffect(() => {
+    setIsInCart(isItemInCart(item.id));
+  }, [cartItems, item.id, isItemInCart]);
 
   const handleIncrement = () => {
     if (quantity < item.stock) {
@@ -22,8 +30,9 @@ const AddToCart: React.FC<AddToCartProps> = ({ item, onAddToCart }) => {
   };
 
   const handleAddToCart = () => {
-    onAddToCart(quantity);
-    setQuantity(1); // Resetea la cantidad luego de agregarse al carro
+    addToCart(item, quantity);
+    setQuantity(1);
+    setShowNotification(true);
   };
 
   return (
@@ -32,7 +41,7 @@ const AddToCart: React.FC<AddToCartProps> = ({ item, onAddToCart }) => {
         <button
           onClick={handleDecrement}
           className="px-2 py-1 bg-gray-200 rounded-l"
-          disabled={quantity === 1}
+          disabled={quantity === 1 || isInCart}
         >
           -
         </button>
@@ -40,18 +49,22 @@ const AddToCart: React.FC<AddToCartProps> = ({ item, onAddToCart }) => {
         <button
           onClick={handleIncrement}
           className="px-2 py-1 bg-gray-200 rounded-r"
-          disabled={quantity === item.stock}
+          disabled={quantity === item.stock || isInCart}
         >
           +
         </button>
       </div>
       <button
         onClick={handleAddToCart}
-        className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800"
-        disabled={item.stock === 0}
+        className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        disabled={item.stock === 0 || isInCart}
       >
-        {item.stock > 0 ? 'Agregar al carrito' : 'Sin stock'}
+        {isInCart ? 'En el carrito' : item.stock > 0 ? 'Agregar al carrito' : 'Sin stock'}
       </button>
+      <AddToCartNotification
+        isVisible={showNotification}
+        onClose={() => setShowNotification(false)}
+      />
     </div>
   );
 };

@@ -2,30 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { RopaItem, ropaItem } from '../data/productData';
 import AddToCart from './AddToCart';
+import Loader from './Loader';
 
 const ItemDetailContainer: React.FC = () => {
   const [item, setItem] = useState<RopaItem | null>(null);
+  const [loading, setLoading] = useState(true);
   const { itemId } = useParams<{ itemId: string }>();
 
   useEffect(() => {
     const fetchItem = async () => {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulamos un tiempo de respuesta de una api!
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
       const foundItem = ropaItem.find(i => i.id === Number(itemId));
       setItem(foundItem || null);
+      setLoading(false);
     };
 
     fetchItem();
   }, [itemId]);
 
-  const handleAddToCart = (quantity: number) => {
-    if (item) {
-      console.log(`Agregado ${quantity} de ${item.nombre} al carrito!`);
-      // Ver aca de agregar al cart 
-    }
-  };
+  if (loading) {
+    return <Loader />;
+  }
 
   if (!item) {
-    return <div>Cargando...</div>;
+    return <div>Producto no encontrado</div>;
   }
 
   return (
@@ -40,7 +41,7 @@ const ItemDetailContainer: React.FC = () => {
           <p className="mt-2 text-gray-600">{item.descripcion}</p>
           <div className="mt-4 text-xl font-bold text-gray-900">${item.precio.toFixed(2)}</div>
           <p className="mt-2 text-sm text-gray-600">Stock disponible: {item.stock}</p>
-          <AddToCart item={item} onAddToCart={handleAddToCart} />
+          <AddToCart item={item} />
         </div>
       </div>
     </div>
