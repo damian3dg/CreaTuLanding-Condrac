@@ -8,11 +8,11 @@ interface CartItem extends RopaItem {
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: RopaItem, quantity: number) => void;
-  removeFromCart: (itemId: number) => void;
-  updateQuantity: (itemId: number, newQuantity: number) => void;
+  removeFromCart: (itemId: string) => void;
+  updateQuantity: (itemId: string, newQuantity: number) => void;
   clearCart: () => void;
   getCartTotal: () => number;
-  isItemInCart: (itemId: number) => boolean;
+  isItemInCart: (itemId: string) => boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -34,11 +34,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const removeFromCart = (itemId: number) => {
+  const removeFromCart = (itemId: string) => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
   };
 
-  const updateQuantity = (itemId: number, newQuantity: number) => {
+  const updateQuantity = (itemId: string, newQuantity: number) => {
     setCartItems(prevItems =>
       prevItems.map(item =>
         item.id === itemId
@@ -56,7 +56,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return cartItems.reduce((total, item) => total + item.precio * item.quantity, 0);
   };
 
-  const isItemInCart = (itemId: number) => {
+  const isItemInCart = (itemId: string) => {
     return cartItems.some(item => item.id === itemId);
   };
 

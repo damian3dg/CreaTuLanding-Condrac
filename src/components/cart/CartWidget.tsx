@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../../context/CartContext';
 import CartSidePanel from './CartSidePanel';
 
 const CartWidget: React.FC = () => {

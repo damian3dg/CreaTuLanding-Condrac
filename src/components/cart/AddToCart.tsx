@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { RopaItem } from '../data/productData';
-import { useCart } from '../context/CartContext';
+import { RopaItem } from '../../data/productData';
+import { useCart } from '../../context/CartContext';
 import AddToCartNotification from './AddToCartNotification';
 
 interface AddToCartProps {
