@@ -1,4 +1,4 @@
-# My Tailwind App
+# El ROPERO App
 
 Este proyecto es una aplicación React configurada con Tailwind CSS para el diseño de la interfaz de usuario y Firebase para la administración de la base de datos. También utiliza Framer Motion para animaciones y Lucide Icons para íconos.
 
