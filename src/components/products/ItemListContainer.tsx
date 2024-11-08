@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { RopaItem } from '../../data/productData';
 import ShimmerEffect from '../common/ShimmerEffect';
 import { db } from '../../firebase/firebaseConfig'; 
@@ -13,7 +13,7 @@ const ItemListContainer: React.FC<ItemListContainerProps> = ({ greeting }) => {
   const [items, setItems] = useState<RopaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { categoryId } = useParams<{ categoryId: string }>();
-
+  const navigate = useNavigate();
   const Categories = ['pantalones', 'remeras', 'zapatillas'];
 
 
@@ -23,13 +23,19 @@ const ItemListContainer: React.FC<ItemListContainerProps> = ({ greeting }) => {
       try {
         const allItems: RopaItem[] = [];
         
+        if (categoryId && !Categories.includes(categoryId)) {
+          // Si categoryId no es válido, redirigir a la página de NotFound
+          navigate('/notfound');
+          return;  // Detener la ejecución si no es una categoría válida
+        }
         // Get all documents from the ropaItems collection
         const querySnapshot = await getDocs(collection(db, "ropaItems"));
         querySnapshot.forEach((doc) => {
           allItems.push({ id: doc.id, ...doc.data() } as RopaItem);
         });
 
-        // Filter items based on categoryId or show all if no categoryId or not a fixed category
+       
+
         const filteredItems = categoryId && Categories.includes(categoryId)
           ? allItems.filter(item => item.categoria === categoryId)
           : allItems;
